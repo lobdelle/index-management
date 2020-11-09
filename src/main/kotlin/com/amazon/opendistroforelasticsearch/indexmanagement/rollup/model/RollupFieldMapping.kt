@@ -17,8 +17,15 @@ package com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model
 
 import com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model.Rollup.Companion.DIMENSIONS_FIELD
 import com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model.Rollup.Companion.METRICS_FIELD
+import com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model.metric.Metric
 
 data class RollupFieldMapping(val fieldType: FieldType, val fieldName: String, val mappingType: String) {
+
+    private var sourceType: String? = null
+
+    fun sourceType(type: String?) {
+        this.sourceType = type
+    }
 
     override fun toString(): String {
         return "$fieldName.$mappingType"
@@ -30,6 +37,16 @@ data class RollupFieldMapping(val fieldType: FieldType, val fieldName: String, v
             FieldType.METRIC -> "missing $mappingType aggregation on $fieldName"
             else -> "missing $mappingType grouping on $fieldName"
         }
+    }
+
+    fun internalFieldMappings(): Set<String> {
+        val internalFields = mutableSetOf<String>()
+        if (this.mappingType == Metric.Type.AVERAGE.type) {
+            internalFields.add("$this.value_count")
+            internalFields.add("$this.sum")
+        }
+        internalFields.add("$this")
+        return internalFields
     }
 
     companion object {
