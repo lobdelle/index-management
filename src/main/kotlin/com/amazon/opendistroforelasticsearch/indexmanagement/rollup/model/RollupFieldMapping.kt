@@ -19,9 +19,7 @@ import com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model.Rollup
 import com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model.Rollup.Companion.METRICS_FIELD
 import com.amazon.opendistroforelasticsearch.indexmanagement.rollup.model.metric.Metric
 
-data class RollupFieldMapping(val fieldType: FieldType, val fieldName: String, val mappingType: String) {
-
-    private var sourceType: String? = null
+data class RollupFieldMapping(val fieldType: FieldType, val fieldName: String, val mappingType: String, var sourceType: String? = null) {
 
     fun sourceType(type: String?) {
         this.sourceType = type
